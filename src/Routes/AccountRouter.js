@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const accountService = require('./accountService');
+const AccountService = require('../Services/AccountService');
 
 const accountRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -21,11 +21,11 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
       });
 
   try {
-    const passwordError = UserService.validatePassword(Password);
+    const passwordError = AccountService.validatePassword(Password);
 
     if (passwordError) return res.status(400).json({ error: passwordError });
 
-    const hasUserWithUserName = await UserService.hasUserWithUserName(
+    const hasUserWithUserName = await AccountService.hasUserWithUserName(
       req.app.get('db'),
       Username
     );
@@ -33,7 +33,7 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
     if (hasUserWithUserName)
       return res.status(400).json({ error: `Username already taken` });
 
-    const hashedPassword = await UserService.hashPassword(Password);
+    const hashedPassword = await AccountService.hashPassword(Password);
 
     const newUser = {
       Username,
@@ -43,9 +43,9 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
       Password: hashedPassword
     };
 
-    const user = await UserService.insertUser(req.app.get('db'), newUser);
+    const user = await AccountService.insertUser(req.app.get('db'), newUser);
 
-    await UserService.populateUserWords(req.app.get('db'), user.id);
+    await AccountService.populateUserWords(req.app.get('db'), user.id);
 
     res
       .status(201)
