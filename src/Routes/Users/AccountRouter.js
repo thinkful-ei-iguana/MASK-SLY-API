@@ -23,7 +23,8 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
   try {
     const passwordError = AccountService.validatePassword(password);
 
-    if (passwordError) return res.status(400).json({ error: passwordError });
+    if (passwordError)
+      return res.status(400).json({ error: passwordError });
 
     const hasUserWithUserName = await AccountService.hasUserWithUserName(
       req.app.get('db'),
@@ -33,7 +34,7 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
     if (hasUserWithUserName)
       return res.status(400).json({ error: `Username already taken` });
 
-    const hashedPassword = await AccountService.hashPassword(Password);
+    const hashedPassword = await AccountService.hashPassword(password);
 
     const newUser = {
       username,
@@ -45,12 +46,10 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
 
     const user = await AccountService.insertUser(req.app.get('db'), newUser);
 
-    await AccountService.populateUserWords(req.app.get('db'), user.id);
-
     res
       .status(201)
       .location(path.posix.join(req.originalUrl, `/${user.id}`))
-      .json(UserService.serializeUser(user));
+      .json(AccountService.serializeUser(user));
   } catch (error) {
     next(error);
   }

@@ -4,7 +4,7 @@ const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*
 
 const AccountService = {
   hasUserWithUserName(db, username) {
-    return db('user')
+    return db('users')
       .where({ username })
       .first()
       .then(user => !!user);
@@ -12,9 +12,11 @@ const AccountService = {
   insertUser(db, newUser) {
     return db
       .insert(newUser)
-      .into('user')
+      .into('users')
       .returning('*')
-      .then(([user]) => user);
+      .then(rows => {
+        return rows[0];
+      });
   },
   validatePassword(password) {
     if (password.length < 8) {
@@ -27,7 +29,7 @@ const AccountService = {
       return 'Password must not start or end with empty spaces';
     }
     if (!REGEX_UPPER_LOWER_NUMBER_SPECIAL.test(password)) {
-      return 'Password must contain one upper case, lower case, number and special character';
+      return 'Password must contain one upper case, lower case, number, and special character';
     }
     return null;
   },
@@ -37,10 +39,9 @@ const AccountService = {
   serializeUser(user) {
     return {
       id: user.id,
-      First_Name: user.FirstName,
-      Last_Name: user.LastName,
-      Email: user.Email,
-      Username: user.Username
+      first_name: user.first_name,
+      last_name: user.last_name,
+      username: user.username
     };
   }
 };

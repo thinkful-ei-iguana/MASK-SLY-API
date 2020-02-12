@@ -8,7 +8,7 @@ describe('User Endpoints', function () {
   let db;
 
   const testUsers = helpers.makeUsersArray();
-  const testUser = helpers.makeUsersArray();
+  const testUser = testUsers[0];
 
   // Before all tests set the knex inxtance to the database
   before('make knex instance', () => {
@@ -92,7 +92,7 @@ describe('User Endpoints', function () {
       };
 
       return supertest(app)
-        .post('/api/user')
+        .post('/api/users')
         .send(longPasswordUser)
         .expect(400, {
           error: 'Password must be less than 72 characters'
@@ -187,7 +187,7 @@ describe('User Endpoints', function () {
 
         // Creates a valid user registration
         const validUser = {
-          username: testUser.username,
+          username: 'TestDummy',
           password: 'GetWr3ck3d!',
           first_name: 'Crash',
           last_name: 'Dummy',
@@ -195,7 +195,7 @@ describe('User Endpoints', function () {
         };
 
         return supertest(app)
-          .post('/api/user')
+          .post('/api/users')
           .send(validUser)
           .expect(201)
           .expect(res => {
@@ -214,7 +214,7 @@ describe('User Endpoints', function () {
 
         // Creates a valid user registration
         const validUser = {
-          username: testUser.username,
+          username: 'TestDummy',
           password: 'GetWr3ck3d!',
           first_name: 'Crash',
           last_name: 'Dummy',
@@ -234,7 +234,7 @@ describe('User Endpoints', function () {
                 expect(row.first_name).to.eql(validUser.first_name);
                 expect(row.last_name).to.eql(validUser.last_name);
                 expect(row.email).to.eql(validUser.email);
-
+                
                 return bcrypt.compare(validUser.password, row.password);
               })
               .then(compareMatch => {
