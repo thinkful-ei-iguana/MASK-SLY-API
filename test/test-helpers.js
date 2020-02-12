@@ -39,6 +39,7 @@ function cleanTables(db) {
   return db.transaction(trx =>
     trx.raw(
       `TRUNCATE
+        "user_answers",
         "users"`
     )
       .then(() =>

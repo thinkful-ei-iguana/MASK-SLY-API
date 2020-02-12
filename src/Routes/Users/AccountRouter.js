@@ -1,19 +1,19 @@
 const express = require('express');
 const path = require('path');
-const AccountService = require('../Services/AccountService');
+const AccountService = require('./AccountService');
 
 const accountRouter = express.Router();
 const jsonBodyParser = express.json();
 
 accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
-  const { Password, Username, FirstName, LastName, Email } = req.body;
+  const { password, username, first_name, last_name, email } = req.body;
 
   for (const field of [
-    'FirstName',
-    'LastName',
-    'Email',
-    'Username',
-    'Password'
+    'first_name',
+    'last_name',
+    'email',
+    'username',
+    'password'
   ])
     if (!req.body[field])
       return res.status(400).json({
@@ -21,13 +21,13 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
       });
 
   try {
-    const passwordError = AccountService.validatePassword(Password);
+    const passwordError = AccountService.validatePassword(password);
 
     if (passwordError) return res.status(400).json({ error: passwordError });
 
     const hasUserWithUserName = await AccountService.hasUserWithUserName(
       req.app.get('db'),
-      Username
+      username
     );
 
     if (hasUserWithUserName)
@@ -36,11 +36,11 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
     const hashedPassword = await AccountService.hashPassword(Password);
 
     const newUser = {
-      Username,
-      Email,
-      FirstName,
-      LastName,
-      Password: hashedPassword
+      username,
+      email,
+      first_name,
+      last_name,
+      password: hashedPassword
     };
 
     const user = await AccountService.insertUser(req.app.get('db'), newUser);

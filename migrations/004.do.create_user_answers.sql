@@ -3,6 +3,6 @@ CREATE TABLE "user_answers" (
   "user_answer" TEXT NOT NULL,
   "question_id" INTEGER REFERENCES "questions"
 (id),
-  "user_id" INTEGER REFERENCES "user"
+  "user_id" INTEGER REFERENCES "users"
 (id)
 );

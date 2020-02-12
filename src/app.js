@@ -3,8 +3,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
-const authRouter = require('./Middleware/Auth/AuthRouter');
-const accountRouter = require('./Routes/AccountRouter');
+const authRouter = require('./Routes/Auth/AuthRouter');
+const accountRouter = require('./Routes/Users/AccountRouter');
 
 const { NODE_ENV } = require('./config');
 
@@ -17,7 +17,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use('/api/auth', authRouter);
-app.use('/api/account', accountRouter);
+app.use('/api/users', accountRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello, world!');
