@@ -34,6 +34,23 @@ function makeUsersArray() {
   ];
 }
 
+// Generates an authorization header usin the users information and the jwt secret
+function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
+
+  // Creates the token
+  const token = jwt.sign(
+    { user_id: user.id},
+    secret,
+    {
+      subject: user.username,
+      algorithm: 'HS256'
+    }
+  );
+
+  //returns the generated token
+  return `Bearer ${token}`;
+}
+
 // Cleans all of the tables in the database
 function cleanTables(db) {
   return db.transaction(trx =>
@@ -73,6 +90,7 @@ function seedUsers(db, users) {
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
+  makeAuthHeader,
   cleanTables,
   seedUsers
 }

@@ -3,9 +3,10 @@ const jwt = require('jsonwebtoken');
 const config = require('../../config');
 
 const AuthService = {
-  getUserWithUserName(db, Username) {
-    return db('user')
-      .where({ Username })
+  getUserWithUserName(db, username) {
+    return db('users')
+      .select('*')
+      .where({ username })
       .first();
   },
   comparePasswords(password, hash) {
@@ -20,7 +21,7 @@ const AuthService = {
   },
   verifyJwt(token) {
     return jwt.verify(token, config.JWT_SECRET, {
-      algorithms: ['HS256']
+      algorithm: 'HS256'
     });
   }
 };
