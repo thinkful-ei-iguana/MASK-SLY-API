@@ -8,7 +8,7 @@ describe('Questions Endpoints', function () {
   let db;
 
   // Creates test questions and answers arrays to seed the database
-  const [testQuestions, testAnswers] = helpers.makeQuestionsArray();
+  const [testQuestions, testAnswers] = helpers.makeQuestionsAndAnswersArray();
 
   // Before all tests creates the knex instance to the database
   before('make knex instance', () => {

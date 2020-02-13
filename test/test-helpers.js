@@ -12,7 +12,6 @@ function makeKnexInstance() {
 }
 
 // Returns an array of test users
-
 function makeUsersArray() {
   return [
     {
@@ -32,6 +31,42 @@ function makeUsersArray() {
       email: 'TARDIStrooper@yahoo.com'
     }
   ];
+}
+
+// Returns an array of answers and an array of quesitons
+function makeQuestionAndAnswersArray() {
+  const questions = [
+    {
+      id: 1,
+      question: "What is the airspeed velocity of an unlaiden swallow",
+      topic: "history",
+      answered: 34
+    },
+    {
+      id: 2,
+      question: "What am I holding in my hand?",
+      topic: "psychic",
+      answered: 19
+    },
+    {
+      id: 3,
+      question: "What is the meaning of life, the universe and everything?",
+      topic: "philosophy",
+      answered: 42
+    },
+    {
+      id: 4,
+      question: "",
+      topic: "",
+      answered: 34
+    },
+    {
+      id: 5,
+      question: "",
+      topic: "",
+      answered: 34
+    }
+  ]
 }
 
 // Generates an authorization header usin the users information and the jwt secret
