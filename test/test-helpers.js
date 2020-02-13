@@ -56,9 +56,9 @@ function makeQuestionAndAnswersArray() {
     },
     {
       id: 4,
-      question: "",
-      topic: "",
-      answered: 34
+      question: "How are you?",
+      topic: "well-being",
+      answered: 2000
     },
     {
       id: 5,
