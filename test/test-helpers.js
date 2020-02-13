@@ -35,6 +35,8 @@ function makeUsersArray() {
 
 // Returns an array of answers and an array of quesitons
 function makeQuestionAndAnswersArray() {
+
+  // Creates the questoins array
   const questions = [
     {
       id: 1,
@@ -54,19 +56,68 @@ function makeQuestionAndAnswersArray() {
       topic: "philosophy",
       answered: 42
     },
+  ];
+
+  // Creates the answers array
+  const answers = [
+    {
+      id: 1,
+      answer: "Ummmmm...",
+      question_id: 1
+    },
+    {
+      id: 2,
+      answer: "I don't know",
+      question_id: 1
+    },
+    {
+      id: 3,
+      answer: "31-40 mph",
+      question_id: 1
+    },
     {
       id: 4,
-      question: "How are you?",
-      topic: "well-being",
-      answered: 2000
+      answer: "A pencil",
+      question_id: 2
     },
     {
       id: 5,
-      question: "",
-      topic: "",
-      answered: 34
+      answer: "A computer mouse",
+      question_id: 2
+    },
+    {
+      id: 6,
+      answer: "A magic 8 ball",
+      question_id: 2
+    },
+    {
+      id: 7,
+      answer: "A puppy",
+      question_id: 2
+    },
+    {
+      id: 8,
+      answer: "Family",
+      question_id: 3
+    },
+    {
+      id: 9,
+      answer: "Friends",
+      question_id: 3
+    },
+    {
+      id: 10,
+      answer: "Love",
+      question_id: 3
+    },
+    {
+      id: 11,
+      answer: "42",
+      question_id: 3
     }
-  ]
+  ];
+
+  return [questions, words];
 }
 
 // Generates an authorization header usin the users information and the jwt secret
@@ -91,12 +142,21 @@ function cleanTables(db) {
   return db.transaction(trx =>
     trx.raw(
       `TRUNCATE
+        "questions",
+        "answers",
         "user_answers",
-        "users"`
+        "users",
+        `
     )
       .then(() =>
         Promise.all([
+          trx.raw('ALTER SEQUENCE questions_id_seq minvalue 0 START WITH 1'),
+          trx.raw('ALTER SEQUENCE answers_id_sequence minvalue 0 START WITH 1'),
+          trx.raw('ALTER SEQUENCE user_answers_id minvalue 0 START WITH 1'),
           trx.raw('ALTER SEQUENCE users_id_seq minvalue 0 START WITH 1'),
+          trx.raw('SELECT setval(\'questions_id_seq\', 0)'),
+          trx.raw('SELECT setval(\'answers_id_seq\', 0)'),
+          trx.raw('SELECT setval(\'user_answers_id\', 0)'),
           trx.raw('SELECT setval(\'users_id_seq\', 0)')
         ])
       )
