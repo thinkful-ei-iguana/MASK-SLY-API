@@ -6,4 +6,5 @@ CREATE TABLE "users_info" (
   "gender" TEXT NOT NULL,
   "college_graduate" BOOLEAN NOT NULL ,
   "user_id" INTEGER REFERENCES "users"(id)
+    ON DELETE CASCADE NOT NULL
 );

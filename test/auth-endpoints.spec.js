@@ -4,7 +4,7 @@ const helpers = require('./test-helpers');
 const config = require('../src/config')
 
 // Tests all functions of the auth endpoint
-describe.only('Auth Endpoints', function() {
+describe('Auth Endpoints', function() {
 
   // Create a container for the knex instance in scope to be set later
   let db;
