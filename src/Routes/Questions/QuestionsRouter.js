@@ -3,7 +3,6 @@ const QuestionsService = require('./QuestionsService');
 const { requireAuth } = require('../../Middleware/JWT');
 
 const questionsRouter = express.Router();
-const jsonBodyParser = express.json();
 
 // Sets require auth on all questions checkpoints
 questionsRouter
@@ -32,12 +31,48 @@ questionsRouter
 // Responds when a GET request is made to the '/questions/:page' endpoint
 questionsRouter
   .route('/:page/:page_size')
-  .get(jsonBodyParser, async (req, res, next) => {
-    res.json(await QuestionsService.paginateQuestions(
-      req.app.get('db'),
-      req.params.page,
-      req.params.page_size
-    ));
+  .get(async (req, res, next) => {
+    try {
+      res.json(await QuestionsService.paginateQuestions(
+        req.app.get('db'),
+        req.params.page,
+        req.params.page_size
+      ));
+      next();
+    } catch (error) {
+      next(error)
+    }
+  });
+
+// Responds when a GET request is made to the '/questions/:question_id/answers' endpoint
+questionsRouter
+  .route('/:question_id/answers')
+  .get(async (req, res, next) => {
+    try {
+
+      // Checks if the question exists in the database
+      const questionAnswers  = QuestionsService.getQuestionAnswers(
+        req.app.get('db'),
+        req.params.question_id
+      );
+
+      // If the question does not exist then responds with a 404 NOT FOUND
+      if (questionAnswers === []) {
+        return res
+          .status(404)
+          .json({
+            error: 'Unable to find question with that id'
+          });
+      } else {
+        return res.json(await  QuestionsService.getQuestionAnswers(
+          req.app.get('db'),
+          req.params.question_id
+        ))
+      }
+      next();
+    } catch (error) {
+      next(error)
+    }
   });
 
 module.exports = questionsRouter;

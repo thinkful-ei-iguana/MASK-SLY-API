@@ -226,6 +226,22 @@ function paginateQuestions(qArr, page, pSize) {
   return newArr;
 }
 
+// Returns an array of answers referrencing a question id
+function findQuestionAnswers(qId, ansArr) {
+  
+  // Creates a new array to hold the values
+  const newArr = [];
+
+  // Loops through the whole answers array
+  for (let i = 0; i < ansArr.length; i++) {
+    if (ansArr[i].question_id === qId) {
+      newArr.push(ansArr[i]);
+    }
+  }
+
+  return newArr;
+}
+
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
@@ -234,5 +250,6 @@ module.exports = {
   cleanTables,
   seedUsers,
   seedUsersQuestionsAnswers,
-  paginateQuestions
+  paginateQuestions,
+  findQuestionAnswers,
 }

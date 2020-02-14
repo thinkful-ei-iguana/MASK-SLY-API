@@ -18,6 +18,30 @@ const QuestionsService = {
       .select('*')
       .limit(pSize)
       .offset(offset);
+  },
+
+  // Checks if the question exists in the database
+  checkIfQuestion(db, question_id) {
+    
+    // Create a container to hold the question
+    const question = db('questions')
+      .select('*')
+      .where('question.id', question_id);
+
+    // If question is found returns true
+    if (question) {
+      return true;
+    }
+
+    // Otherwise return false
+    return false;
+  },
+
+  // Gets the answers for a specific question
+  getQuestionAnswers(db, question_id) {
+    return db('answers')
+      .select('*')
+      .where('answers.question_id', question_id);
   }
 };
 
