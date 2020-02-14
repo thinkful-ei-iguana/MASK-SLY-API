@@ -23,8 +23,7 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
   try {
     const passwordError = AccountService.validatePassword(password);
 
-    if (passwordError)
-      return res.status(400).json({ error: passwordError });
+    if (passwordError) return res.status(400).json({ error: passwordError });
 
     const hasUserWithUserName = await AccountService.hasUserWithUserName(
       req.app.get('db'),
@@ -53,6 +52,55 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+accountRouter.post('/initial', jsonBodyParser, (req, res, next) => {
+  const {
+    user_id,
+    age,
+    location,
+    nationality,
+    gender,
+    collegegraduate
+  } = req.body;
+
+  if (!user_id) {
+    logger.error('User ID is required');
+    return res.status(400).send('User ID required');
+  }
+  if (!age) {
+    logger.error('Age is required');
+    return res.status(400).send('Age required');
+  }
+  if (!nationality) {
+    logger.error('Nationality is required');
+    return res.status(400).send('Nationality required');
+  }
+  if (!gender) {
+    logger.error('Gender is required');
+    return res.status(400).send('Gender required');
+  }
+  if (!collegegraduate) {
+    logger.error('CollegeGraduate is required');
+    return res.status(400).send('CollegeGraduate required');
+  }
+  if (!location) {
+    logger.error('Location is required');
+    return res.status(400).send('Location required');
+  }
+
+  const initialAnswers = {
+    user_id,
+    age,
+    location,
+    nationality,
+    gender,
+    collegegraduate
+  };
+
+  AccountService.insertAnswers(initialAnswers)
+    .then(result => res.status(201).json(result))
+    .catch(next);
 });
 
 module.exports = accountRouter;
