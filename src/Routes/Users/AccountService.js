@@ -12,7 +12,7 @@ const AccountService = {
   insertUser(db, newUser) {
     return db
       .insert(newUser)
-      .into('users_info')
+      .into('users')
       .returning('*')
       .then(rows => {
         return rows[0];
@@ -46,7 +46,7 @@ const AccountService = {
   },
   insertAnswers(answers) {
     return db
-      .into('users')
+      .into('users_info')
       .insert(answers)
       .returning('*')
       .then(rows => {
