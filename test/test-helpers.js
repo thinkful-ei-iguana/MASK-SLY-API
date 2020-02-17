@@ -34,10 +34,10 @@ function makeUsersArray() {
 }
 
 // Returns an array of answers and an array of quesitons
-function makeQuestionAndAnswersArray() {
+function makeQuestionAndAnswersArrays() {
 
   // Creates the questoins array
-  const questions = [
+  const testQuestions = [
     {
       id: 1,
       question: "What is the airspeed velocity of an unlaiden swallow",
@@ -59,7 +59,7 @@ function makeQuestionAndAnswersArray() {
   ];
 
   // Creates the answers array
-  const answers = [
+  const testAnswers = [
     {
       id: 1,
       answer: "Ummmmm...",
@@ -117,7 +117,7 @@ function makeQuestionAndAnswersArray() {
     }
   ];
 
-  return [questions, words];
+  return [testQuestions, testAnswers];
 }
 
 // Generates an authorization header usin the users information and the jwt secret
@@ -142,22 +142,24 @@ function cleanTables(db) {
   return db.transaction(trx =>
     trx.raw(
       `TRUNCATE
-        "questions",
-        "answers",
+        "users_info",
         "user_answers",
         "users",
-        `
+        "questions",
+        "answers"`
     )
       .then(() =>
         Promise.all([
-          trx.raw('ALTER SEQUENCE questions_id_seq minvalue 0 START WITH 1'),
-          trx.raw('ALTER SEQUENCE answers_id_sequence minvalue 0 START WITH 1'),
-          trx.raw('ALTER SEQUENCE user_answers_id minvalue 0 START WITH 1'),
+          trx.raw('ALTER SEQUENCE users_info_id_seq minvalue 0 START WITH 1'),
+          trx.raw('ALTER SEQUENCE user_answers_id_seq minvalue 0 START WITH 1'),
           trx.raw('ALTER SEQUENCE users_id_seq minvalue 0 START WITH 1'),
+          trx.raw('ALTER SEQUENCE questions_id_seq minvalue 0 START WITH 1'),
+          trx.raw('ALTER SEQUENCE answers_id_seq minvalue 0 START WITH 1'),
+          trx.raw('SELECT setval(\'users_info_id_seq\', 0)'),
+          trx.raw('SELECT setval(\'user_answers_id_seq\', 0)'),
+          trx.raw('SELECT setval(\'users_id_seq\', 0)'),
           trx.raw('SELECT setval(\'questions_id_seq\', 0)'),
-          trx.raw('SELECT setval(\'answers_id_seq\', 0)'),
-          trx.raw('SELECT setval(\'user_answers_id\', 0)'),
-          trx.raw('SELECT setval(\'users_id_seq\', 0)')
+          trx.raw('SELECT setval(\'answers_id_seq\', 0)')
         ])
       )
   );
@@ -182,10 +184,72 @@ function seedUsers(db, users) {
   })
 }
 
+// Seeds the questions and answers into the test database
+async function seedUsersQuestionsAnswers(db, users, questions, answers) {
+  
+  //Seeds the users into the database
+  await seedUsers(db, users)
+
+  // Inserts test questions and answers into their respective tables 
+  await db.transaction(async trx => {
+    await trx.into('questions').insert(questions);
+    await trx.into('answers').insert(answers);
+
+    // Sets the schema sequencing for the questions and answers to the appropriate value
+    await Promise.all([
+      trx.raw(
+        'SELECT setval(\'questions_id_seq\', ?)',
+        [questions[questions.length - 1].id]
+      ),
+      trx.raw(
+        'SELECT setval(\'answers_id_seq\', ?)',
+        [answers[answers.length - 1].id]
+      )
+    ]);
+  })
+}
+
+// Paginates an array of questions
+function paginateQuestions(qArr, page, pSize) {
+
+  // Create the offset for the offset based off of page size
+  const offset = pSize * (page - 1);
+
+  // Container to hold the new question array being returned
+  const newArr = [];
+
+  // Loops through the questions array starting at the offset. Pushing each question into the new ending after the new array
+  for (let i = offset; i < offset + pSize; i++) {
+    newArr.push(qArr[i]);
+  }
+
+  return newArr;
+}
+
+// Returns an array of answers referrencing a question id
+function findQuestionAnswers(qId, ansArr) {
+  
+  // Creates a new array to hold the values
+  const newArr = [];
+
+  // Loops through the whole answers array
+  for (let i = 0; i < ansArr.length; i++) {
+    if (ansArr[i].question_id === qId) {
+      newArr.push(ansArr[i]);
+    }
+  }
+
+  return newArr;
+}
+
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
+  makeQuestionAndAnswersArrays,
   makeAuthHeader,
   cleanTables,
-  seedUsers
+  seedUsers,
+  seedUsersQuestionsAnswers,
+  paginateQuestions,
+  findQuestionAnswers,
 }

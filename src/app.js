@@ -5,6 +5,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const authRouter = require('./Routes/Auth/AuthRouter');
 const accountRouter = require('./Routes/Users/AccountRouter');
+const questionsRouter = require('./Routes/Questions/QuestionsRouter');
+const answersRouter = require('./Routes/Answers/AnswersRouter');
 
 const { NODE_ENV } = require('./config');
 
@@ -18,6 +20,8 @@ app.use(cors());
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', accountRouter);
+app.use('/api/questions', questionsRouter);
+app.use('/api/answers', answersRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
