@@ -2,7 +2,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 
 // Contains tests for all questions endpoints
-describe.only('Questions Endpoints', function () {
+describe('Questions Endpoints', function () {
 
   // Creates a container for the knex instance at an accessible scope for all tests
   let db;
@@ -32,8 +32,8 @@ describe.only('Questions Endpoints', function () {
   // Contains all tests for the '/questions' route
   describe('GET /api/questions', () => {
 
-    // Before each test seed, the questions and answers to the database
-    beforeEach('insert questions and answers', () => {
+    // Before each test seed the users, questions, and answers to the database
+    beforeEach('insert users, questionss and answers', () => {
       return helpers.seedUsersQuestionsAnswers(
         db,
         testUsers,
@@ -80,49 +80,6 @@ describe.only('Questions Endpoints', function () {
         .set('Authorization', helpers.makeAuthHeader(testUser))
         .expect(200)
         .expect(pagiQuest);
-    });
-  });
-
-  // Contains all the tests for the '/api/questions/:question_id/answers' endpoint
-  describe('GET /questions/:question_id/answers', () => {
-
-    // Before each test seed the users, questions and answers to the database
-    beforeEach('insert questions and answers', () => {
-      return helpers.seedUsersQuestionsAnswers(
-        db,
-        testUsers,
-        testQuestions,
-        testAnswers
-      );
-    });
-
-    // Responds with 404 if the question id doesn't exist
-    it('responds with 404 NOT FOUND when question id does not exist', () => {
-
-      // Creates an invalid id based on questions array length
-      const invalidId = testQuestions.length + 20; 
-
-      return supertest(app)
-        .get(`/api/questions/${invalidId}/answers`)
-        .set('Authorization', helpers.makeAuthHeader(testUser))
-        .expect(404, {
-          error: 'Unable to find question with that id'
-        });
-    });
-
-    // Test if the endpoint responds appropriately given a valid question id
-    it('responds with 200 and array of answers', () => {
-
-      // Creates a container to hold the test question
-      const testQuestion = testQuestions[0];
-
-      // Creates a container holding the array of test answers
-      const testQuestionAnswers = helpers.findQuestionAnswers(testQuestion.id, testAnswers);
-
-      return supertest(app)
-        .get(`/api/questions/${testQuestion.id}/answers`)
-        .set('Authorization', helpers.makeAuthHeader(testUser))
-        .expect(200, testQuestionAnswers);
     });
   });
 });
