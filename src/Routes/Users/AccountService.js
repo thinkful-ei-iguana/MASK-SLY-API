@@ -52,6 +52,13 @@ const AccountService = {
       .then(rows => {
         return rows[0];
       });
+  },
+  initialStatus(db) {
+    return db
+      .from('users_info')
+      .where({ user_id: 1 })
+      .first()
+      .returning('*');
   }
 };
 
