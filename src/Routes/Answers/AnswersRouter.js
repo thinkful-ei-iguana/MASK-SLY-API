@@ -3,7 +3,7 @@ const express = require('express');
 const AnswersService = require('./AnswersService');
 const { requireAuth } = require('../../Middleware/JWT');
 
-// Builds a new router for the endpoint
+// Creates a new router for the endpoint
 const answersRouter = express.Router();
 
 // Set this as a protected endpoint
