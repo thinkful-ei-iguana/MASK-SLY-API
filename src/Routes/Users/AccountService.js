@@ -53,10 +53,10 @@ const AccountService = {
         return rows[0];
       });
   },
-  initialStatus(db) {
+  initialStatus(db, user_id) {
     return db
       .from('users_info')
-      .where({ user_id: 1 })
+      .where({ user_id })
       .first()
       .returning('*');
   }

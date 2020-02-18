@@ -106,7 +106,9 @@ accountRouter.post('/initial', jsonBodyParser, (req, res, next) => {
 accountRouter.get('/initial/:user_id', (req, res) => {
   const { user_id } = req.param;
 
-  AccountService.initialStatus(req.app.get('db')).then(result => {
+  // grabs the user_id from the params then searchs the users_info table to see if theyve completed the initial quiz
+  // if they have the api sends 'true' back to the user and 'false' if not
+  AccountService.initialStatus(req.app.get('db'), user_id).then(result => {
     if (result !== undefined) {
       return res.status(200).json(true);
     } else {
@@ -116,15 +118,3 @@ accountRouter.get('/initial/:user_id', (req, res) => {
 });
 
 module.exports = accountRouter;
-
-// if (
-//   result.age === undefined &&
-//   result.location === undefined &&
-//   result.nationality === undefined &&
-//   result.gender === undefined &&
-//   result.collegegraduate === undefined
-// ) {
-//   return res.status(200).json(true);
-// } else {
-//   return res.status(200).json(false);
-// }
