@@ -44,7 +44,7 @@ const AccountService = {
       username: user.username
     };
   },
-  insertAnswers(answers) {
+  insertAnswers(db, answers) {
     return db
       .into('users_info')
       .insert(answers)

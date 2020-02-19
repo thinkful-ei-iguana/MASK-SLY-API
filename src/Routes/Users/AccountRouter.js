@@ -57,54 +57,49 @@ accountRouter.post('/', jsonBodyParser, async (req, res, next) => {
 accountRouter.post('/initial', jsonBodyParser, (req, res, next) => {
   const {
     user_id,
-    age,
+    birthdate,
     location,
     nationality,
     gender,
-    collegegraduate
+    college_graduate
   } = req.body;
 
   if (!user_id) {
     logger.error('User ID is required');
     return res.status(400).send('User ID required');
   }
-  if (!age) {
-    logger.error('Age is required');
-    return res.status(400).send('Age required');
+  if (!birthdate) {
+    return res.status(400).send('Birthdate required');
   }
   if (!nationality) {
-    logger.error('Nationality is required');
     return res.status(400).send('Nationality required');
   }
   if (!gender) {
-    logger.error('Gender is required');
     return res.status(400).send('Gender required');
   }
-  if (!collegegraduate) {
-    logger.error('CollegeGraduate is required');
+  if (!college_graduate) {
     return res.status(400).send('CollegeGraduate required');
   }
   if (!location) {
-    logger.error('Location is required');
     return res.status(400).send('Location required');
   }
 
   const initialAnswers = {
     user_id,
-    age,
+    birthdate,
     location,
     nationality,
     gender,
-    collegegraduate
+    college_graduate
   };
 
-  AccountService.insertAnswers(initialAnswers)
+  AccountService.insertAnswers(req.app.get('db'), initialAnswers)
     .then(result => res.status(201).json(result))
     .catch(next);
 });
 
 accountRouter.get('/initial/:user_id', (req, res) => {
-  const { user_id } = req.param;
+  const { user_id } = req.params;
 
   // grabs the user_id from the params then searchs the users_info table to see if theyve completed the initial quiz
   // if they have the api sends 'true' back to the user and 'false' if not
