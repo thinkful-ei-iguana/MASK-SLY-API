@@ -2,7 +2,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 
 // Contains tests for all answers endpoints
-describe.only('Answers Endpoints', function() {
+describe('Answers Endpoints', function() {
   // Creates a container for the knex instance at an accessible scope for all tests
   let db;
 
