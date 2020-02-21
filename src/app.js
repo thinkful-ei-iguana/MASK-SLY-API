@@ -7,6 +7,7 @@ const authRouter = require('./Routes/Auth/AuthRouter');
 const accountRouter = require('./Routes/Users/AccountRouter');
 const questionsRouter = require('./Routes/Questions/QuestionsRouter');
 const answersRouter = require('./Routes/Answers/AnswersRouter');
+const initialRouter = require('./Routes/Initial/InitialRouter');
 
 const { NODE_ENV } = require('./config');
 
@@ -19,6 +20,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use('/api/auth', authRouter);
+app.use('/api/initial', initialRouter);
 app.use('/api/users', accountRouter);
 app.use('/api/questions', questionsRouter);
 app.use('/api/answers', answersRouter);
