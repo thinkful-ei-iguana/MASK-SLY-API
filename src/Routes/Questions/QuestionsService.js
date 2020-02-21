@@ -25,6 +25,14 @@ const QuestionsService = {
       .where({ id });
   },
 
+  // Groups all the questions by topic and returns them
+  groupByTopic(db) {
+    return db
+      .distinct()
+      .from('questions')
+      .select('topic');
+  },
+
   // Gets the questions for a specific topic
   getQuestionAnswers(db, topic) {
     return db('questions')
