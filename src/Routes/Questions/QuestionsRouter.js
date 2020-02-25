@@ -22,6 +22,16 @@ questionsRouter.route('/').get(async (req, res, next) => {
   }
 });
 
+// Responds with the specific question and its answer selections
+questionsRouter.get('/:question_id', (req, res) => {
+  const { question_id } = req.params;
+
+  QuestionsService.getQuestion(req.app.get('db'), question_id).then(result => {
+    const [question] = result;
+    res.status(200).json(question);
+  });
+});
+
 // Responds when a GET request is made to the '/questions/topic' endpoint
 questionsRouter.get('/topic', (req, res) => {
   // Retrieves all the questions and groups them by topic and returns them to the client
@@ -35,7 +45,7 @@ questionsRouter.get('/topic/:topic', (req, res) => {
   const { topic } = req.params;
 
   // Retrieves all the questions related to ':topic' and returns them to the client
-  QuestionsService.getByTopic(req.app.get('db'), topic).then(res =>
+  QuestionsService.getQuestionAnswers(req.app.get('db'), topic).then(res =>
     console.log(res)
   );
 });

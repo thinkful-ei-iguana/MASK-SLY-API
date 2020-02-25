@@ -19,8 +19,7 @@ const QuestionsService = {
 
   // Gets a specific question
   getQuestion(db, id) {
-    return db
-      .from('questions')
+    return db('questions')
       .select('*')
       .where({ id });
   },
